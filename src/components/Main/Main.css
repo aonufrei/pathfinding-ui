@@ -1,0 +1,10 @@
+.canvas {
+    background-color: black;
+}
+
+.cell {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: 20px;
+}

@@ -1,0 +1,50 @@
+.page {
+    padding-left: 20%;
+    padding-right: 20%;
+    /* border-radius: 10px 10px 10px 10px; */
+    color: var(--main-text-color);
+}
+
+.page-content {
+    display: block;
+    border-radius: 8px;
+    text-align: left;
+    padding: 10px 30px;
+    background-color: var(--dark-3);
+}
+
+.page-title {
+    display: inline-block;
+    font-size: 1.2em;
+}
+
+.pathfinding-canvas {
+    position: relative;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.grid-container {
+    display: inline-block;
+    background-color: black;
+    padding: 2px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    grid-template-rows: repeat(16, 1fr);
+    column-gap: 2px;
+    row-gap: 2px;
+}
+
+.cell {
+    background-color: white;
+    display: block;
+    width: 15px;
+    height: 15px;
+    border: 1px solid black;
+    /* border: 1px solid black; */
+}

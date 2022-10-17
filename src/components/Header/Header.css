@@ -1,0 +1,23 @@
+.header {
+  background-color: var(--dark);
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 2px 4px var(--common-shadow);
+}
+
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+.header-logo {
+  font-size: 3em;
+  text-shadow: -3px -1px var(--accent);
+  color: var(--main-text-color)
+}
+
+.header {
+  margin-bottom: 1em;
+}
