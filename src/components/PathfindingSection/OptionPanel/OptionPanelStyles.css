@@ -5,9 +5,12 @@
 }
 
 .option {
+    border: none;
+    border-radius: 5px;
     display: block;
     padding: 10px;
     width: auto;
+    color: var(--darker);
     font-size: 1.4em;
     background-color: whitesmoke;
     transition: .3s all;
@@ -15,4 +18,21 @@
 
 .option-selected {
     background-color: aquamarine;
+}
+
+.disabled-option {
+    border: none;
+    border-radius: 5px;
+    display: block;
+    padding: 10px;
+    width: auto;
+    color: #232323;
+    font-size: 1.4em;
+    background-color: grey;
+    transition: .3s all;
+}
+
+.disabled-option-selected {
+    background-color: #49a183;
+    color: #232323;
 }

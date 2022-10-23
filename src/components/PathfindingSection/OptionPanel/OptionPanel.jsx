@@ -2,19 +2,27 @@ import { useState } from "react";
 import { nanoid } from "nanoid";
 import "./OptionPanelStyles.css";
 
-const OptionPanel = ({ options, selectedOptionIndex }) => {
+const OptionPanel = ({ enableButtons, options, selectedOptionIndex }) => {
   const [selectedOption, setSelectedOption] = useState(
     selectedOptionIndex || 0
   );
 
   const onOptionClicked = (e, option, index) => {
+    if (!enableButtons) {
+        return
+    }
     setSelectedOption(index);
     option.onClick(e, index);
   };
 
   const createOptionButton = (option, index) => {
-    const classNames =
+    let classNames =
       "option" + (index === selectedOption ? " option-selected" : "");
+    if (!enableButtons) {
+      classNames =
+        "disabled-option" +
+        (index === selectedOption ? " disabled-option-selected" : "");
+    }
     return (
       <button
         className={classNames}

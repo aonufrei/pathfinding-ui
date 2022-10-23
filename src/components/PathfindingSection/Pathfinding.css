@@ -124,4 +124,36 @@
     color: blue;
     padding: 10px;
     font-size: 1.4em;
+    border: none;
+    border-radius: 5px;
+}
+
+.disabled-find-path-button {
+    background-color: grey;
+    color: #232323;
+    padding: 10px;
+    font-size: 1.4em;
+}
+
+.play-btn {
+    background-color: var(--accent);
+    color: var(--darker);
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1.4em;
+}
+
+.disabled-play-btn {
+    background-color: grey;
+    color: #232323;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1.4em;
+}
+
+.pathfinding-toolbar {
+    display: flex;
+    justify-content: space-between;
 }

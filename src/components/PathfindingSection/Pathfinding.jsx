@@ -10,6 +10,7 @@ import {
   createCellInfo,
   constructGridStructure,
 } from "./utils";
+import StateButton from "../Button/StateButton";
 
 const Pathfinding = () => {
   const COLUMNS = 16;
@@ -22,6 +23,9 @@ const Pathfinding = () => {
   const [pivot, setPivot] = useState(cells.wall);
   const [shortestRoute, setShortestRoute] = useState(undefined);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(2);
+  const [allowEditing, setAllowEditing] = useState(true);
+  const [allowClearRoute, setAllowClearRoute] = useState(true);
+  const [allowPlayAnimation, setAllowPlayAnimation] = useState(true);
 
   const onDraw = (e) => {
     setShortestRoute(undefined);
@@ -127,6 +131,11 @@ const Pathfinding = () => {
         ...structureToRequestData(),
       })
       .then((res) => {
+        const found = res.data.found;
+        if (!found) {
+          alert("Route was not found!")
+          return
+        }
         let route = res.data.details.route;
         route.shift();
         route.pop();
@@ -149,30 +158,46 @@ const Pathfinding = () => {
       return;
     }
     clearRoute();
-
+    setAllowEditing(false);
+    setAllowClearRoute(false);
+    setAllowPlayAnimation(false);
     let index = 0;
+    let route = [...shortestRoute.route];
     const interval = setInterval(() => {
-      if (index >= shortestRoute.iterations.length) {  
+      if (index >= shortestRoute.iterations.length && route.length <= 0) {
+        setAllowEditing(true);
+        setAllowPlayAnimation(true);
+        setAllowClearRoute(true);
         clearInterval(interval);
         return;
       }
-      const frame = shortestRoute.iterations[index++];
-      let nStructure = [...structure];
-      frame.areAlreadyProcessed
-        .map((p) => p.y * ROWS + p.x)
-        .forEach(
-          (indexToChange) =>
-            (nStructure[indexToChange].upperLayer = upperLayerTypes.processed)
-        );
-      frame.areProcessing
-        .map((p) => p.y * ROWS + p.x)
-        .forEach(
-          (indexToChange) =>
-            (nStructure[indexToChange].upperLayer =
-              upperLayerTypes.areProcessing)
-        );
-      setStructure(nStructure);
-    }, 50);
+
+      if (index < shortestRoute.iterations.length) {
+        const frame = shortestRoute.iterations[index++];
+        let nStructure = [...structure];
+        frame.areAlreadyProcessed
+          .map((p) => p.y * ROWS + p.x)
+          .forEach((indexToChange) => {
+            if (nStructure[indexToChange].type !== cells.start.name) {
+              nStructure[indexToChange].upperLayer = upperLayerTypes.processed;
+            }
+          });
+        frame.areProcessing
+          .map((p) => p.y * ROWS + p.x)
+          .forEach((indexToChange) => {
+            if (nStructure[indexToChange].type !== cells.start.name) {
+              nStructure[indexToChange].upperLayer =
+                upperLayerTypes.areProcessing;
+            }
+          });
+        setStructure(nStructure);
+      } else {
+        const point = route.pop();
+        let nStructure = [...structure];
+        nStructure[point.y * ROWS + point.x].upperLayer = upperLayerTypes.route;
+        setStructure(nStructure);
+      }
+    }, 10);
   };
 
   const onClearRoutePressed = () => {
@@ -212,22 +237,37 @@ const Pathfinding = () => {
         <p className="page-title">Draw your map and find the shortest path:</p>
         <div className="pathfinding">
           <Grid structure={structure} onCellPressed={onDraw} />
-          <OptionPanel
-            options={options}
-            selectedOptionIndex={selectedOptionIndex}
-          />
+          <div className="pathfinding-toolbar">
+            <OptionPanel
+              enableButtons={allowEditing}
+              options={options}
+              selectedOptionIndex={selectedOptionIndex}
+            />
+            <button
+              onClick={(_) => onFindPathClicked()}
+              className="find-path-button"
+            >
+              Find Route
+            </button>
+          </div>
           {/* <PlaybackPanel frames={shortestRoute === undefined ? [] : shortestRoute.iterations} onRender={onFrameRender} delay={250} /> */}
         </div>
-        <button
-          onClick={(_) => onFindPathClicked()}
-          className="find-path-button"
-        >
-          Find Route
-        </button>
         {shortestRoute !== undefined && (
           <div>
-            <button onClick={(_) => onClearRoutePressed()}>Clear Route</button>
-            <button onClick={(_) => playAnimation()}>Play animation</button>
+            <StateButton
+              text="Clear Route"
+              enable={allowClearRoute}
+              onClick={(_) => onClearRoutePressed()}
+              enableClassNames="find-path-button"
+              disableClassNames="disabled-find-path-button"
+            />
+            <StateButton
+              text="Play animation"
+              enable={allowPlayAnimation}
+              onClick={(_) => playAnimation()}
+              enableClassNames="play-btn"
+              disableClassNames="disabled-play-btn"
+            />
           </div>
         )}
       </div>
