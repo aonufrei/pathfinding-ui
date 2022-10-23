@@ -11,6 +11,7 @@
     text-align: left;
     padding: 10px 30px;
     background-color: var(--dark-3);
+    background-color: transparent;
 }
 
 .page-title {
@@ -27,24 +28,100 @@
 }
 
 .grid-container {
-    display: inline-block;
-    background-color: black;
-    padding: 2px;
+    display: block;
+    /* display: inline-block; */
+    /* background-color: black; */
+    padding: 20px;
+    display: flex;
+    justify-content: center;
 }
 
 .grid {
     display: grid;
+    overflow: auto;
     grid-template-columns: repeat(16, 1fr);
     grid-template-rows: repeat(16, 1fr);
-    column-gap: 2px;
-    row-gap: 2px;
+    column-gap: 1px;
+    row-gap: 1px;
+    border: 2px solid whitesmoke;
+    margin-bottom: 20px;
 }
 
 .cell {
     background-color: white;
     display: block;
-    width: 15px;
-    height: 15px;
+    width: 30px;
+    height: 30px;
     border: 1px solid black;
-    /* border: 1px solid black; */
+    transition: .5s all;
+}
+
+.cell:after {
+    content: ' ';
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: grey;
+}
+
+.cell:hover {
+    outline: 1px solid rgba(255, 208, 208, 0.757);
+}
+
+.pathfinding {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.257);
+}
+
+/* .cell::after {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: aquamarine;
+} */
+
+.start-cell {
+    background-color: #76D7C4;
+    transition: .5s all;
+}
+
+.end-cell {
+    background-color: #BB8FCE;
+    transition: .5s all;
+}
+
+.wall-cell {
+    background-color: #E5E8E8;
+    transition: .5s all;
+}
+
+.bcg-cell {
+    background-color: #212F3D;
+    transition: .5s all;
+}
+
+.route-cell {
+    background-color: purple;
+    transition: .5s all;
+}
+
+.processing-cell {
+    background-color: green;
+    transition: .5s all;
+}
+
+.processed-cell {
+    background-color: yellow;
+    transition: .5s all;
+}
+
+
+.find-path-button {
+    background-color: bisque;
+    color: blue;
+    padding: 10px;
+    font-size: 1.4em;
 }

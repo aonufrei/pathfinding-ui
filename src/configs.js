@@ -1,27 +1,27 @@
 const cells = {
     bcg: {
       name: "background",
-      color: "#212F3D",
+      class: "bcg-cell",
       placable: true,
     },
     start: {
       name: "start",
-      color: "#76D7C4",
+      class: "start-cell",
       placable: true,
     },
     finish: {
       name: "finish",
-      color: "#BB8FCE",
+      class: "end-cell",
       placable: true,
     },
     wall: {
       name: "wall",
-      color: "#E5E8E8",
+      class: "wall-cell",
       placable: true,
     },
     route: {
       name: "route",
-      color: "#CD6155",
+      class: "route-cell",
       placable: false,
     }
 }
