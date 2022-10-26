@@ -6,7 +6,6 @@
 
 .option {
     border: none;
-    border-radius: 5px;
     display: block;
     padding: 10px;
     width: auto;
@@ -16,11 +15,15 @@
     transition: .3s all;
 }
 
-.option-selected {
+.option:hover {
+    background-color: #d2d2d2;
+}
+
+.option-selected, .option-selected:hover {
     background-color: aquamarine;
 }
 
-.disabled-option {
+.disabled-option, .disabled-option:hover {
     border: none;
     border-radius: 5px;
     display: block;

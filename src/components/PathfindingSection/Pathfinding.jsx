@@ -23,6 +23,7 @@ const Pathfinding = () => {
   const [pivot, setPivot] = useState(cells.wall);
   const [shortestRoute, setShortestRoute] = useState(undefined);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(2);
+  const [selectedAlgorithmPriority, setSelectedAlgorithmPriority] = useState(0);
   const [allowEditing, setAllowEditing] = useState(true);
   const [allowClearRoute, setAllowClearRoute] = useState(true);
   const [allowPlayAnimation, setAllowPlayAnimation] = useState(true);
@@ -100,9 +101,40 @@ const Pathfinding = () => {
         };
       });
 
-    const start = usefulPoints.filter((it) => it.type === "start")[0];
-    const finish = usefulPoints.filter((it) => it.type === "finish")[0];
-    const walls = usefulPoints.filter((it) => it.type === "wall");
+    let start = undefined;
+    let finish = undefined;
+    const walls = [];
+    for (let p of usefulPoints) {
+      if (p.type === "start") {
+        if (start !== undefined) {
+          alert("Start point is required");
+          return undefined;
+        }
+        start = p;
+        continue;
+      }
+      if (p.type === "finish") {
+        if (finish !== undefined) {
+          alert("Start point is required");
+          return undefined;
+        }
+        finish = p;
+        continue;
+      }
+      if (p.type === "wall") {
+        walls.push(p);
+      }
+    }
+
+    if (start === undefined) {
+      alert("Start point should be specified");
+      return undefined;
+    }
+    if (finish === undefined) {
+      alert("Target point should be specified");
+      return undefined;
+    }
+
     const gridInfo = {
       left_border: 0,
       right_border: ROWS,
@@ -121,20 +153,32 @@ const Pathfinding = () => {
     };
   };
 
+  const detectPriority = (index) => (index === 0 ? "QUALITY" : "SPEED");
+
   const onFindPathClicked = () => {
     if (shortestRoute !== undefined) {
       return;
     }
     clearRoute();
+    const mapInfo = structureToRequestData();
+    if (mapInfo === undefined) {
+      console.error("Map info is incomplete");
+      return;
+    }
     axios
-      .post("http://localhost:8080/api/v1/find-path/grid", {
-        ...structureToRequestData(),
-      })
+      .post(
+        `http://localhost:8080/api/v1/find-path/grid?priority=${detectPriority(
+          selectedAlgorithmPriority
+        )}`,
+        {
+          ...mapInfo,
+        }
+      )
       .then((res) => {
         const found = res.data.found;
         if (!found) {
-          alert("Route was not found!")
-          return
+          alert("Route was not found!");
+          return;
         }
         let route = res.data.details.route;
         route.shift();
@@ -150,7 +194,10 @@ const Pathfinding = () => {
         setShortestRoute(res.data.details);
         setStructure(nStructure);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.error(err);
+        alert("Sorry, unable to create a path now. Try again later.");
+      });
   };
 
   const playAnimation = () => {
@@ -231,45 +278,73 @@ const Pathfinding = () => {
     },
   ];
 
+  const onPriorityOptionChange = (index) => {
+    setSelectedAlgorithmPriority(index);
+    clearRoute();
+    setShortestRoute(undefined);
+  };
+
+  const algorithmPriorityOptions = [
+    {
+      text: "Precisely",
+      onClick: () => onPriorityOptionChange(0),
+    },
+    {
+      text: "Faster",
+      onClick: () => onPriorityOptionChange(1),
+    },
+  ];
+
   return (
     <div className="page">
       <div className="page-content">
-        <p className="page-title">Draw your map and find the shortest path:</p>
         <div className="pathfinding">
-          <Grid structure={structure} onCellPressed={onDraw} />
-          <div className="pathfinding-toolbar">
+          <div className="floating-pathfinding-toolbar">
             <OptionPanel
               enableButtons={allowEditing}
               options={options}
               selectedOptionIndex={selectedOptionIndex}
             />
-            <button
-              onClick={(_) => onFindPathClicked()}
-              className="find-path-button"
-            >
-              Find Route
-            </button>
           </div>
-          {/* <PlaybackPanel frames={shortestRoute === undefined ? [] : shortestRoute.iterations} onRender={onFrameRender} delay={250} /> */}
+          <Grid structure={structure} onCellPressed={onDraw} />
+          <div
+            className="algorithm-pathfinding-toolbar"
+            style={{ marginBottom: "30px" }}
+          >
+            <OptionPanel
+              enableButtons={true}
+              options={algorithmPriorityOptions}
+              selectedOptionIndex={selectedAlgorithmPriority}
+            />
+          </div>
+          <div className="pathfinding-toolbar">
+            {shortestRoute === undefined ? (
+              <button
+                onClick={(_) => onFindPathClicked()}
+                className="find-path-button"
+              >
+                Find Route
+              </button>
+            ) : (
+              <div className="playback-btns">
+                <StateButton
+                  text="Clear Route"
+                  enable={allowClearRoute}
+                  onClick={(_) => onClearRoutePressed()}
+                  enableClassNames="clean-button"
+                  disableClassNames="disabled-clean-button"
+                />
+                <StateButton
+                  text="Play animation"
+                  enable={allowPlayAnimation}
+                  onClick={(_) => playAnimation()}
+                  enableClassNames="play-btn"
+                  disableClassNames="disabled-play-btn"
+                />
+              </div>
+            )}
+          </div>
         </div>
-        {shortestRoute !== undefined && (
-          <div>
-            <StateButton
-              text="Clear Route"
-              enable={allowClearRoute}
-              onClick={(_) => onClearRoutePressed()}
-              enableClassNames="find-path-button"
-              disableClassNames="disabled-find-path-button"
-            />
-            <StateButton
-              text="Play animation"
-              enable={allowPlayAnimation}
-              onClick={(_) => playAnimation()}
-              enableClassNames="play-btn"
-              disableClassNames="disabled-play-btn"
-            />
-          </div>
-        )}
       </div>
     </div>
   );

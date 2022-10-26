@@ -2,7 +2,7 @@ import { useState } from "react";
 import { nanoid } from "nanoid";
 import "./OptionPanelStyles.css";
 
-const OptionPanel = ({ enableButtons, options, selectedOptionIndex }) => {
+const OptionPanel = ({ containerClassName, enableButtons, options, selectedOptionIndex }) => {
   const [selectedOption, setSelectedOption] = useState(
     selectedOptionIndex || 0
   );
@@ -35,7 +35,7 @@ const OptionPanel = ({ enableButtons, options, selectedOptionIndex }) => {
   };
 
   return (
-    <div className="option-panel">
+    <div className={containerClassName ?? "option-panel"}>
       {options.map((opt, index) => createOptionButton(opt, index))}
     </div>
   );
