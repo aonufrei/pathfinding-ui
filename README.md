@@ -1,6 +1,6 @@
 # Pathfinding Application
 
-This project uses Java backend. It can be found [here](https://github.com/aonufrei/pathfinding-ui).
+This project uses Java backend. It can be found [here](https://github.com/aonufrei/pathfinding-backend).
 
 # How to run the app?
 
