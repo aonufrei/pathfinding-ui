@@ -1,7 +1,7 @@
 import "./Pathfinding.css";
 import Grid from "./Grid";
 import OptionPanel from "./OptionPanel/OptionPanel";
-import { cells } from "../../configs";
+import { cells, apiURL } from "../../configs";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
@@ -167,7 +167,7 @@ const Pathfinding = () => {
     }
     axios
       .post(
-        `http://localhost:8080/api/v1/find-path/grid?priority=${detectPriority(
+        `${apiURL}/api/v1/find-path/grid?priority=${detectPriority(
           selectedAlgorithmPriority
         )}`,
         {

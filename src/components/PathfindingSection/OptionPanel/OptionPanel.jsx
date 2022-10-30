@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { nanoid } from "nanoid";
-import "./OptionPanelStyles.css";
+import "./OptionPanel.css";
 
 const OptionPanel = ({ containerClassName, enableButtons, options, selectedOptionIndex }) => {
   const [selectedOption, setSelectedOption] = useState(
